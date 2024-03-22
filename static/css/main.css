@@ -1,0 +1,383 @@
+
+/* REFERENCES 
+- https://www.freecodecamp.org/news/how-to-center-anything-with-css-align-a-div-text-and-more/
+- https://cdn.audleytravel.com/
+*/
+
+head {
+    text-align: center;
+    font-family: sans-serif;
+    font-size: larger;
+}
+
+html {
+    text-align: left;
+    font-family: sans-serif;
+}
+
+body {
+    text-align: left;
+    font-family: sans-serif;
+    background-image: url("https://cdn.audleytravel.com/1050/749/79/426697-the-blue-train-with-table-mountain-in-the-distance.webp");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+.dropdown{
+    min-width: 200px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    width: 100%;
+    padding: 12px 20px;
+    outline: 0;
+    background:#065fd4;
+    color: #fff;
+    border: 1px solid black;
+    padding: 4px;
+    border-radius: 9px;
+  }
+
+.search_result, .main_view {
+    margin: 50px auto;
+    width: 90%;
+}
+
+table, td, th {
+    border: 1px solid #aaa;
+}
+
+p {
+    white-space: pre-wrap;
+}
+
+.routeTable {
+    white-space: pre-wrap;
+    border-collapse: collapse;
+    width: 200%;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+    border-collapse: collapse;
+    height: 100%;
+    table-layout: fixed;
+
+}
+
+th {
+    height: 30px;
+}
+
+td {
+    text-align: center;
+    padding: 10 px;
+}
+
+.show_user {
+    float:left;
+    background-color: whitesmoke;
+    border: 3px solid lightcyan;
+    margin-top: -15px;
+    box-shadow: none;
+    border-radius: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 16px;
+    padding-right: 16px;
+    font-family: Roboto, Arial, Sans-Serif;
+    font-size: 14px;
+    height:36px;
+}
+
+.search {
+    border: 3px solid lightcyan;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 0 auto;
+    width: 400px;
+    background-color: whitesmoke;
+    float: left;
+    text-align: center;
+}
+
+.previous_searches {
+    border: 3px solid lightcyan;
+    border-radius: 15px;
+    padding: 10px;
+    margin: auto;
+    width: 65%;
+    background-color: whitesmoke;
+    float: right;
+}
+
+.search_header {
+    width: 98%;
+	text-align: center;
+    margin: 0 auto;
+    padding: 10px;
+    height: 120px;
+    font-size: large;
+    background-color: whitesmoke;
+    border: 3px solid lightcyan;
+    border-radius: 15px;
+}
+
+.search_image {
+    border: 3px solid lightcyan;
+    border-radius: 15px;
+    padding: 10px;
+    margin: auto;
+    width: 63%;
+    height: 480px;
+    background-color: whitesmoke;
+    float: right;
+}
+
+.admin_view {
+    border: 3px solid lightcyan;
+    border-radius: 15px;
+    padding: 10px;
+    margin: auto;
+    width: 100%;
+    background-color: whitesmoke;
+}
+
+.result {
+    border: 3px solid lightcyan;
+    border-radius: 15px;
+    padding: 10px;
+    margin: auto;
+    width: 33%;
+    height: 480px;
+    background-color: whitesmoke;
+    float: left;
+}
+
+.login_button_location {
+    position:absolute;
+    top:0px;
+    right:0px;
+    float: right;
+   }
+
+.user_logged_in {
+    position: relative;
+    top:0;
+    right:0;
+    float: left;
+}
+
+.login_screen, .register_screen  {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+}
+
+.admin_verification, .admin_control_screen {
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 150px;
+}
+
+.login_container, .register_container, .admin_verification_container, .admin_container {
+    border: 3px solid lightcyan;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 0 auto;
+    width: 500px;
+
+    background-color: whitesmoke;
+}
+
+.admin_buttons {
+    border: 3px solid lightcyan;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 0 auto;
+    width: 500px;
+
+    background-color: whitesmoke;
+}
+
+.admin_view {
+    border: 3px solid lightcyan;
+    border-radius: 15px;
+    padding: 10px;
+    margin: auto;
+    width: 50%;
+    background-color: whitesmoke;
+}
+
+.admin_list_container {
+    width: 100%;
+    padding-top:20px;
+    padding-left:15px;
+    padding-right:15px;
+}
+
+.closed_stations_view {
+    border: 3px solid lightcyan;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 0 auto;
+    width: 45%;
+    float: left;
+    background-color: whitesmoke;
+}
+
+.closed_lines_view {
+    border: 3px solid lightcyan;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 0 auto;
+    width: 45%;
+    float: left;
+    background-color: whitesmoke;
+    margin-left: 40px;
+}
+
+.delayed_lines_view {
+    border: 3px solid lightcyan;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 0 auto;
+    width: 28%;
+    float: left;
+    background-color: whitesmoke;
+    margin-left: 40px;
+}
+
+/* Add Zoom Animation */
+.animate {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s
+  }
+  
+  @-webkit-keyframes animatezoom {
+    from {-webkit-transform: scale(0)}
+    to {-webkit-transform: scale(1)}
+  }
+  
+  @keyframes animatezoom {
+    from {transform: scale(0)}
+    to {transform: scale(1)}
+  }
+
+.output {
+    font-family: Roboto, Arial, Sans-Serif;
+    font-size: 14px;
+    margin:4px, 4px;
+    padding:4px;
+    background-color: whitesmoke;
+    width: 100%;
+    height: 70%;
+    overflow-wrap: break-word;
+    overflow-y: auto;
+    text-align:left;
+}
+
+/* From uiverse.io by @e-coders */
+.largeButton {
+    font-family: Roboto, Arial, Sans-Serif;
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    background-color: #065fd4;
+    border: 0;
+    box-shadow: none;
+    border-radius: 2px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 16px;
+    padding-right: 16px;
+    text-transform: uppercase;
+    font-weight: 500;
+   }
+
+.largeButton:hover, .tableButton:hover, .tableButtonAdmin:hover , .dropdown:hover {
+    background-color: navy;
+}
+
+.tableButton {
+    font-family: Roboto, Arial, Sans-Serif;
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    background-color: #065fd4;
+    border: 0;
+    box-shadow: none;
+    border-radius: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 6px;
+    padding-right: 6px;
+    text-transform: uppercase;
+    font-weight: 100;
+}
+
+.tableButtonAdmin {
+    font-family: Roboto, Arial, Sans-Serif;
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    background-color: #065fd4;
+    border: 0;
+    box-shadow: none;
+    border-radius: 2px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 6px;
+    padding-right: 6px;
+    text-transform: uppercase;
+    font-weight: 100;
+    width: 70%;
+}
+
+
+/* TRIAL */
+input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  
+label {
+    color: black;
+    font-weight: bold;
+    display: block;
+    width: 100%;
+    float: left;
+    }
+
+.header {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 100%;
+	height: 20px;
+	text-align: center;
+    margin: 0 auto;
+    font-size:x-large;
+      }

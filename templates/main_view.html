@@ -1,0 +1,684 @@
+<!-- 
+    HTML for the main view of the PTJP Web Application. Displays the main view of the Web App from
+    which users can search. 
+
+    Author:       Michael Schoots
+    Last Updated: 28 September 2022
+-->
+
+{% extends 'base.html' %}
+
+{% block head %}
+<title> PTJP Web Application </title>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+{% endblock %}
+
+{% block body %}
+<!---------------------------------------------------MAIN SCREEN-------------------------------------------------------->
+<!--
+    The main screen presented to users upon login. It contains an area to search, buttons to login/logout (depending) and
+    an area for previous searches to be shown if a user is logged in.
+-->
+<div class="main_view" id="main_view">
+    <!-- Data list of all stations that can be searched - MJS -->
+    <datalist id="stations">
+            <option value="Abbotsdale">
+            <option value="Artois">
+            <option value="Avondale">
+            <option value="Athlone">
+            <option value="Akasiapark">
+            <option value="Bree River">
+            <option value="Belhar">
+            <option value="Botha">
+            <option value="Brackenfell">
+            <option value="Blackheath">
+            <option value="Bellville">
+            <option value="Bonteheuwel">
+            <option value="Chris Hani">
+            <option value="Cape Town">
+            <option value="Century City">
+            <option value="Crawford">
+            <option value="Claremont">
+            <option value="Chavonnes">
+            <option value="Du Toit">
+            <option value="Dal Josafat">
+            <option value="Dieprivier">
+            <option value="Eerste River">
+            <option value="Eikenfontein">
+            <option value="Elsies River">
+            <option value="Esplanade">
+            <option value="False Bay">
+            <option value="Faure">
+            <option value="Fisantkraal">
+            <option value="Fish Hoek">
+            <option value="Firgrove">
+            <option value="Goodwood">
+            <option value="Glencairn">
+            <option value="Gouda">
+            <option value="Goudini Rd">
+            <option value="Harfield Rd"> 
+            <option value="Hazendal">
+            <option value="Heathfield">
+            <option value="Hermon">
+            <option value="Huguenot">
+            <option value="Heideveld">
+            <option value="Kalk Bay">
+            <option value="Klapmuts">
+            <option value="Kalbaskraal">
+            <option value="Kipheuwel">
+            <option value="Kuyasa">
+            <option value="Kenilworth">
+            <option value="Kapteinsklip">
+            <option value="Khayelitsha">
+            <option value="Kentemade">
+            <option value="Koeberg Rd">
+            <option value="Koelenhof">
+            <option value="Kraaifontein">
+            <option value="Kuilsrivier">
+            <option value="Lakeside">
+            <option value="Landsdowne">
+            <option value="Lenteguer">
+            <option value="Langa">
+            <option value="Lavistown">
+            <option value="Lynedoch">
+            <option value="Maitland">
+            <option value="Mandalay">
+            <option value="Malmesbury">
+            <option value="M'bekweni">
+            <option value="Mikpunt">
+            <option value="Mellish">
+            <option value="Melton Rose">
+            <option value="Monte Vista">
+            <option value="Mitchell's Plain">
+            <option value="Malan">
+            <option value="Mowbray">
+            <option value="Muizenberg">
+            <option value="Muldersvlei">
+            <option value="Mutual">
+            <option value="Newlands">
+            <option value="Ndabeni">
+            <option value="Netreg">
+            <option value="Nolungile">
+            <option value="Nyanga">
+            <option value="Nonqubela">
+            <option value="Observatory">
+            <option value="Oosterzee">
+            <option value="Ottery">
+            <option value="Paarl">
+            <option value="Parow">
+            <option value="Pentech">
+            <option value="Philippi">
+            <option value="Pinelands">
+            <option value="Plumstead">
+            <option value="Romans River">
+            <option value="Retreat">
+            <option value="Rosebank">
+            <option value="Rondebosch">
+            <option value="Strand">
+            <option value="Sarepta">
+            <option value="Somerset West">
+            <option value="Stellenbosch">
+            <option value="Soetendal">
+            <option value="Salt River">
+            <option value="Simon's Town">
+            <option value="Southfield">
+            <option value="Steenberg">
+            <option value="Steurhof">
+            <option value="Stikland">
+            <option value="St James">
+            <option value="Stock Road">
+            <option value="Sunny Cove">
+            <option value="Tygerberg">
+            <option value="Tulbaghweg">
+            <option value="Thornton">
+            <option value="Unibell">
+            <option value="Vlottenberg">
+            <option value="Van Der Stel">
+            <option value="Vasco">
+            <option value="Voelvlei">
+            <option value="Wetton">
+            <option value="Wolseley">
+            <option value="Worcester">
+            <option value="Wintervogel">
+            <option value="Wellington">
+            <option value="Woodstock">
+            <option value="Woltemade">
+            <option value="Wittebome">
+            <option value="Wynberg">
+            <option value="Ysterplaat">
+    </datalist>
+        <!-- Create the text boxes in which the search info is entered - MJS -->
+    <div class="search" id="search" autocomplete="off" action="/action_page.php">
+        <h1 style="text-align: center">Plan your journey!</h1>
+
+        <label for="from">From:</label><br>
+        <input type="text" list="stations" placeholder="Enter Station" name="from" id="from" autofocus required><br><br>
+
+        <label for="to">To:</label><br>
+        <input type="text" list="stations" placeholder="Enter Station" name="to" id="to" required><br><br>
+ 
+        <!-- Drop down for choice of schedule - MJS -->
+        <label for="schedule">Choose schedule:</label><br>
+        <select id="schedule" name="schedule" class="dropdown">
+            <option value="Choose">--Choose--</option>
+            <option value="Mon-Fri">Monday to Friday</option>
+            <option value="Saturdays">Saturdays</option>
+            <option value="Sundays and Public Holidays">Sundays and Public Holidays</option>
+        </select><br><br>
+
+        <!-- Drop down to choose shortest distance or quickest time - MJS -->
+        <label for="filter">Choose arrival or departure time:</label><br>
+        <select id="filter" name="filter" class="dropdown">
+            <option value="Choose">--Choose--</option>
+            <option value="Arrival">Arrival</option>
+            <option value="Departure">Departure</option>
+        </select><br><br>
+
+        <!-- Text box to take in time choice - MJS -->
+        <label for="time">Time:</label><br>
+        <input type="text" id="time" name="time" autocomplete="off" placeholder="hh:mm" required><br><br>
+
+        <button type="button" class="largeButton" id="send_search" style="width:100%">Search</button><br>
+        <!-- Create area to place message if all search criteria not chosen - MJS -->
+        <h5 id="search_not_complete"></h5>
+    </div>
+
+    <!-- Previous searches table populated once a user logs, or a search is made while a user is logged in -->
+    <div class="previous_searches" id="previous_searches">
+        <h2 style="text-align: center">Previous Searches:</h2>
+        <h5 style="text-align: center" id="no_prev_searches"></h5>
+        <table id="previous_searches_table">
+            <thead>
+                <tr>
+                    <th width="180px">From:</th>
+                    <th width="180px">To:</th>
+                    <th width="180px">Schedule:</th>
+                    <th width="180px">Filter:</th>
+                    <th width="180px">Time:</th>
+                    <th width="180px"></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<!-- Button that leads to log-in screen - MJS -->
+<div class="login_button_location" id="login_button_location">
+    <div class="logout_button_location" id="logout_button_location">
+        <div class="show_user">
+            <h4 class="user_logged_in" id="user_logged_in"></h4>
+        </div>
+        <button type="button" class="largeButton" id="logout_button" style="float:right">Logout</button>
+    </div>
+    <button type="button" class="largeButton" id="button_to_login_screen">Login</button>
+</div>
+
+<!-- Login screen pop up - MJS -->
+<div class="login_screen" id="login_screen">
+    <div class="login_container">
+        <h1>Login</h1>
+
+        <!-- Input textbox for username - MJS -->
+        <label for="username"><b>Username:</b></label>
+        <input type="username" placeholder="Enter Username" autocomplete="off" id="username" autofocus required><br>
+        <!-- Input textbox for password - MJS -->
+        <label for="password"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" autocomplete="off" id="password" required><br>
+
+        <!-- Header to be filled in if details invalid - MJS -->
+        <h5 id="invalid_login_details"></h5>
+
+        <!-- Login, Close and Register new account buttons - MJS -->
+        <button type="button" class="largeButton" id="login_button" style="width:100%">Login</button><br><br>
+        <button type="button" class="largeButton" id="close_login_button" style="width:45%; float:left">Close</button> 
+        <button type="button" class="largeButton" id="register_button" style="width:45%; float:right">Register new Account</button><br><br>
+    </div>
+</div>
+
+<!-- Registration screen pop up - MJS -->
+<div class="register_screen" id="register_screen">
+    <div class="register_container">
+        <h1>New Account</h1>
+
+        <!-- Input textbox for username - MJS -->
+        <label for="new_username"><b>Username:</b></label>
+        <input type="new_username" placeholder="Enter Username" autocomplete="off" id="new_username" autofocus required><br>
+        <!-- Input textbox for password - MJS -->
+        <label for="new_password"><b>Password</b></label>
+        <input type="new_password" placeholder="Enter Password" autocomplete="off" id="new_password" required><br>
+
+        <!-- Header to be filled in if details invalid - MJS -->
+        <h5 id="invalid_register_details"></h5>
+
+        <!-- Register and back buttons - MJS -->
+        <button type="button" class="largeButton" id="register_account_button" style="width:100%">Register</button><br><br>
+        <button type="button" class="largeButton" id="return_to_login_button" style="width:100%">Back</button>  
+    </div>
+</div>
+<!---------------------------------------------------MAIN SCREEN-------------------------------------------------------->
+
+<!-------------------------------------------------SEARCH OUTPUT------------------------------------------------------>
+<!-- 
+    Form that is presented to users once they have made a valid search. The results of their search are presented to
+    them along with a button to return to the main view. - MJS 
+-->
+<div class="search_result" id="search_result">
+    <!-- Div for general header over a search -->
+    <div class="search_header">
+        <h1>Your Search</h1>
+        
+        <!-- Heading for if there is a blockage -->
+        <h4 id="blockage_info" style="text-align: center"></h4>
+    </div><br>
+
+    <!-- Div presenting the route to the user -->
+    <div class="result">
+        <h2 style="text-align: center">Route:</h2>
+
+        <!-- Where the search result will be printed -->
+        <p class="output" id="search_result_output"></p><br>
+
+        <!-- Button that, on click, hides the search_result form and presents the main view -->
+        <button type="button" class="largeButton" style="width:100%" id="return_to_main">Return to Main Screen</button><br>
+    </div>
+
+    <!-- Div where the image of a search is displayed -->
+    <div class="search_image">
+        <img id="search_image" src="" alt="Route Map" width="857" height="434" />
+        <h4 id="image_description" style="text-align: center">This is where the image description will be</h4>
+    </div>
+    
+</div>
+<!-------------------------------------------------SEARCH OUTPUT------------------------------------------------------>
+
+<!---------------------------------------------------JAVASCRIPT------------------------------------------------------->
+<!-- 
+    Javascript to add functionality to the application layer, with a different socket dealing with different calls.
+ -->
+<script>
+    // Initialise user as none. Changed when user logs in
+    var user = 'none_logged_in';
+
+    // Hide the necessary elements at the start
+    document.getElementById('search_result').style.display           = 'none';
+    document.getElementById('previous_searches').style.display       = 'none';
+    document.getElementById('logout_button_location').style.display  = 'none';
+    document.getElementById('previous_searches_table').style.display = 'none';
+
+    // Create socket for deleting searches from database
+    const socketDelete = new WebSocket('ws://' + location.host + '/deleteSearch');
+    socketDelete.addEventListener('message', ev => {
+        document.getElementById(ev.data).remove();
+        if (document.querySelectorAll('#previous_searches_table tr').length == 1) {
+            document.getElementById('previous_searches_table').style.display = 'none';
+            document.getElementById('no_prev_searches').innerHTML            = 'You have no previous searches.';
+        }
+    })
+
+    // FUNCTION: Add to previous search table
+    function add_to_previous_search(arr) {
+        document.getElementById('previous_searches_table').style.display = 'block';
+        document.getElementById('no_prev_searches').innerHTML            = '';
+        // Divide array up into individual components
+            var id              = arr[0];
+            var search_from     = arr[1];
+            var search_to       = arr[2];
+            var search_schedule = arr[3];
+            var search_filter   = arr[4];
+            var search_time     = arr[5];
+            var route           = arr[6];
+            var image           = arr[7];
+
+            // Add to table
+            var table = document.getElementById('previous_searches_table');
+            var row = table.insertRow()
+            row.id = id;
+
+            row.insertCell(0).innerHTML = search_from;
+            row.insertCell(1).innerHTML = search_to;
+            row.insertCell(2).innerHTML = search_schedule;
+            row.insertCell(3).innerHTML = search_filter;
+            row.insertCell(4).innerHTML = search_time;
+
+            // Create final element
+            var options = document.createElement('div');
+
+            // Create delete button (to remove search from previous searches)
+            var delete_button         = document.createElement('button');
+            delete_button.type        = 'button';
+            delete_button.classList.add('tableButton');
+            delete_button.textContent = "Delete";
+            delete_button.addEventListener('click', ev => {
+                socketDelete.send(id);
+            })
+
+            // Create search button (to allow users to quickly re-search a previous search)
+            var re_search_button         = document.createElement('button');
+            re_search_button.type        = 'button';
+            re_search_button.classList.add('tableButton');
+            re_search_button.textContent = "Search";
+            re_search_button.addEventListener('click', ev => {
+                show_search(search_from, search_to, route, image);
+            })
+
+            // Add buttons to final element
+            options.appendChild(re_search_button);
+            options.appendChild(delete_button);
+
+            // Add final element to the table row
+            row.insertCell(5).appendChild(options);
+    }
+
+    // FUNCTION: Show a search (hide, reveal and fill relevant pieces)
+    function show_search(from, to, route_info, image) {
+        var temp  = route_info.split('#');
+        var note  = temp[0];
+        var route = temp[1];
+        var image = image;
+
+        // Check if there are any blocks in place, and add appropriate note if necessary
+        if (note == 'Blockage') {
+            document.getElementById('blockage_info').innerHTML = "*NOTE:* Block/s are currently placed. Please note future searches may yield different results.";
+        }
+        else if (note == 'NoBlock') {
+            document.getElementById('blockage_info').innerHTML = '';
+        }
+
+        // Get the necessary views to hide/show
+        var main_view         = document.getElementById('main_view');
+        var previous_searches = document.getElementById('previous_searches');
+        var search_result     = document.getElementById('search_result');
+        var login_button      = document.getElementById('login_button_location');
+        var logout_button     = document.getElementById('logout_button_location');
+
+        // Hide the views not being shown currently
+        main_view.style.display         = 'none';
+        previous_searches.style.display = 'none';
+        login_button.style.display      = 'none';
+        logout_button.style.display     = 'none';
+        
+        // Fill the search result form
+        document.getElementById('search_image').src               = image;
+        document.getElementById('search_result_output').innerHTML = route;
+        document.getElementById('search_not_complete').innerHTML  = '';
+        document.getElementById('image_description').innerHTML    = "SEE ABOVE: Journey from " + from + " to " + to + ".";
+
+        // Present search result page
+        search_result.style.display     = 'block';
+    }
+
+    function reset_search_options() {
+        // Reset dropdowns and text box
+        document.getElementById('from').value             = '';
+        document.getElementById('to').value               = '';
+        document.getElementById('schedule').selectedIndex = 0;
+        document.getElementById('filter').selectedIndex   = 0;
+        document.getElementById('time').value             = '';
+    }
+    
+    /*SEARCH CALLED --START--*/
+    // Create a socket for searching
+    const socketSearch = new WebSocket('ws://' + location.host + '/searchSubmitted');
+    
+    // Create response for when the server replies to the search submission
+    socketSearch.addEventListener('message', ev =>{
+        if (ev.data == 'Not Complete') {
+            document.getElementById('search_not_complete').innerHTML = 'Some search options were not chosen or were invalid. Please try again.';
+            reset_search_options();
+        }
+        // If there were any invalid inputs (station entries that are not in the map), notify user
+        else if (ev.data == 'Invalid inputs') {
+            document.getElementById('search_not_complete').innerHTML = 'Could not find the stations entered. Please ensure your choice is valid.';
+            // Reset dropdowns and text box
+            reset_search_options();
+        }
+        // If both the start and final station are the same
+        else if (ev.data == 'Same stations') {
+            document.getElementById('search_not_complete').innerHTML = 'Both your start and final destinations were the same. No search to be run.';
+            reset_search_options();
+        }
+        // If one of the inputted stations are currently blocked
+        else if (ev.data == 'Station blocked') {
+            document.getElementById('search_not_complete').innerHTML = 'A block is currently placed on one of your given stations. Search could not compute.';
+            reset_search_options();
+        }
+        // In the case that the algorithm cannot compute the search
+        else if (ev.data == 'Sorry, something went wrong. Try another route!') {
+            document.getElementById('search_not_complete').innerHTML = ev.data;
+            reset_search_options();
+        }
+        else {
+            // Check if user logged in, if so add to previous searches
+            search_output = ev.data.split('///');
+            if (search_output[0] != '0') {
+                add_to_previous_search(search_output)
+            }
+            // Show the search to the user
+            show_search(search_output[1], search_output[2], search_output[6], search_output[7]);
+        }
+    })
+
+    // Create response for when search button clicked
+    document.getElementById('send_search').onclick = ev => {
+        ev.preventDefault();
+        // Get inputted search criteria from user
+        var from     = document.getElementById('from').value;
+        var to       = document.getElementById('to').value;
+        var schedule = document.getElementById('schedule').value;
+        var filter   = document.getElementById('filter').value;
+        var time     = document.getElementById('time').value;
+        // Send search data through to server
+        if (from == '') {
+            from = 'Choose';
+        }
+        if (to == '') {
+            to = 'Choose';
+        }
+        socketSearch.send(user + '/' + from + '/' + to + '/' + schedule + '/' + filter + '/' + time);
+    }
+    /*SEARCH CALLED --END--*/
+
+    /*RETURN TO MAIN VIEW --START--*/
+    document.getElementById('return_to_main').onclick = ev => {
+        // Empty and hide the search result div
+        document.getElementById('search_result_output').innerHTML = '';
+        document.getElementById('search_result').style.display    = 'none';
+
+        // Reset dropdowns and text box
+        reset_search_options();
+
+        // Re-present the main view
+        document.getElementById('main_view').style.display                  = 'block';
+        if (user != 'none_logged_in') {
+            document.getElementById('previous_searches').style.display      = 'block';
+            document.getElementById('logout_button_location').style.display = 'block';
+            document.getElementById('login_button_location').style.display  = 'block';
+        }
+        else {
+            document.getElementById('login_button_location').style.display  = 'block';
+        }
+    }
+    /*RETURN TO MAIN VIEW --END--*/
+
+    /*PRESENT LOGIN SCREEN --START--*/
+    document.getElementById('button_to_login_screen').onclick = ev => {
+        document.getElementById('login_screen').style.display = 'block';
+    }
+    /*PRESENT LOGIN SCREEN --END--*/
+
+    /*HIDE LOGIN SCREEN --START--*/
+    document.getElementById('close_login_button').onclick = ev => {
+        // Clear the form
+        document.getElementById('username').value                  = '';
+        document.getElementById('password').value                  = '';
+        document.getElementById('invalid_login_details').innerHTML = '';
+
+        // Hide the form
+        document.getElementById('login_screen').style.display = 'none';
+    }
+    /*HIDE LOGIN SCREEN --END--*/
+
+    /*USER LOGIN --START--*/
+    // Create socket for the login
+    const socketLogin = new WebSocket('ws://' + location.host + '/login');
+
+    // Response when the server responds to a login
+    socketLogin.addEventListener('message', ev => {
+        // Invalid details
+        if ((ev.data == "Incorrect username / password !") || (ev.data == "User is already logged in !")) {
+            document.getElementById('invalid_login_details').innerHTML = ev.data;
+            user = "none_logged_in";
+        }
+        // Log in successful
+        else if (ev.data == "Successful login") {
+            // Hide the form
+            document.getElementById('login_screen').style.display          = 'none';
+            document.getElementById('button_to_login_screen').style.display = 'none';
+
+            // Display logged in user
+            document.getElementById('user_logged_in').innerHTML     = "User: " + user;
+            document.getElementById('user_logged_in').style.display = 'block';
+        }
+        // No previous searches
+        else if (ev.data == "No previous searches") {
+            document.getElementById('no_prev_searches').innerHTML           = 'You have no previous searches.';
+            document.getElementById('previous_searches').style.display      = 'block';
+            document.getElementById('logout_button_location').style.display = 'block';
+        }
+        // A previous search added to the table
+        else {
+            // Reveal logout button and previous searches table
+            document.getElementById('logout_button_location').style.display = 'block';
+            document.getElementById('previous_searches').style.display      = 'block';
+            
+            // Recieve data from server and populate previous searches table
+            var prev_search = ev.data.split('///');
+            add_to_previous_search(prev_search);
+        }
+    })
+
+    // Create a response for when the login button is pressed
+    document.getElementById('login_button').onclick = ev => {
+        ev.preventDefault();
+        // Get the inputted username and password
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+        // Send data through socket to the server
+        if ((username != '') && (password != '')) {
+            socketLogin.send(username + '/' + password);
+            user = username;
+            // Clear the form
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+
+        }
+        // If username/password not given, notify user
+        else {
+            document.getElementById('invalid_login_details').innerHTML = "Please enter both your username and password.";
+        }
+
+    }
+    /*USER LOGIN --END--*/
+
+    /*REGISTER NEW USER --START--*/
+    // Show registration screen and hide login screen
+    document.getElementById('register_button').onclick = ev => {
+        document.getElementById('login_screen').style.display    = 'none';
+        document.getElementById('register_screen').style.display = 'block';
+    }
+
+    // Return to login screen if 'back' is pressed
+    document.getElementById('return_to_login_button').onclick = ev => {
+        // Clear registration and login screen
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        document.getElementById('new_username').value = '';
+        document.getElementById('new_password').value = '';
+        document.getElementById('invalid_login_details').innerHTML    = '';
+        document.getElementById('invalid_register_details').innerHTML = '';
+
+        // Hide register screen, show login screen
+        document.getElementById('login_screen').style.display    = 'block';
+        document.getElementById('register_screen').style.display = 'none';
+    }
+
+    // Create new Socket for registering new users
+    const socketRegister = new WebSocket('ws://' + location.host + '/register');
+
+    // Add listener to socket to receive validation from server
+    socketRegister.addEventListener('message', ev => {
+        ev.preventDefault();
+        document.getElementById('invalid_register_details').innerHTML = ev.data;
+    })
+
+    // On clicking the 'register account' button, send through new user info to server if valid inputs
+    document.getElementById('register_account_button').onclick = ev => {
+        // Get the given username and password
+        var username = document.getElementById('new_username').value;
+        var password = document.getElementById('new_password').value;
+
+        // Check to ensure both fields were filled
+        if ((username != '') && (password != '')) {
+            socketRegister.send(username + '/' + password);
+            // Clear the form
+            document.getElementById('new_username').value = '';
+            document.getElementById('new_password').value = '';
+        }
+        // If field/s not filled, notify user
+        else {
+            document.getElementById('invalid_register_details').innerHTML = "Please enter both your username and password.";
+        }
+    }
+    /*REGISTER NEW USER --END--*/
+
+    /*LOGOUT USER --START--*/
+    const socketLogout = new WebSocket('ws://' + location.host + '/logout')
+    // On receiving confirmation of user being logged out, reset the UI
+    socketLogout.addEventListener('message', ev => {
+        // Reassign user as not logged in
+        user = 'none_logged_in';
+
+        // Hide/reveal relevant items
+        document.getElementById('user_logged_in').innerHTML              = '';
+        document.getElementById('user_logged_in').style.display          = 'none';
+        document.getElementById('logout_button_location').style.display  = 'none';
+        document.getElementById('button_to_login_screen').style.display  = 'block';
+        document.getElementById('previous_searches').style.display       = 'none';
+        document.getElementById('no_prev_searches').innerHTML            = '';
+        document.getElementById('previous_searches_table').style.display = 'none';
+
+        // Clear the previous searches table
+        var table = document.getElementById('previous_searches_table');
+        var rowCount = table.rows.length;
+        for (var i = rowCount - 1; i > 0; i--) {
+            table.deleteRow(i);
+        }
+    })
+
+    // On clicking the logout button, send username to server
+    document.getElementById('logout_button').onclick = ev => {
+        socketLogout.send(user);
+    }
+
+    window.addEventListener('beforeunload', env => {
+        reset_search_options();
+        if (user != 'none_logged_in') {
+            socketLogout.send(user);
+        }
+        socketSearch.close();
+        socketDelete.close();
+        socketLogin.close();
+        socketRegister.close();
+        socketLogout.close();
+    })
+
+    /*LOGOUT USER --END--*/
+
+</script>
+
+<!---------------------------------------------------JAVASCRIPT------------------------------------------------------->
+{% endblock %}

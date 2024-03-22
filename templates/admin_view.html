@@ -1,0 +1,493 @@
+<!--
+    HTML program to provide admin with the functionality to block/unblock train stations and lines.
+
+    Author      : Michael Schoots
+    Last Updated: 28 September
+-->
+
+{% extends 'base.html' %}
+
+{% block head %}
+<title> PTJP Web Application: Admin Control </title>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+{% endblock %}
+
+{% block body %}
+<style>
+    body {
+        background-image: none;
+        background-color: slateblue;
+    }
+</style>
+
+<div class="search_header">
+    <h1>PJTP Application: Admin Control</h1>
+</div><br><br>
+
+<!-- Data list of all stations that can be blocked -->
+<datalist id="stations">
+    <option value="Abbotsdale">
+    <option value="Artois">
+    <option value="Avondale">
+    <option value="Athlone">
+    <option value="Akasiapark">
+    <option value="Bree River">
+    <option value="Belhar">
+    <option value="Botha">
+    <option value="Brackenfell">
+    <option value="Blackheath">
+    <option value="Bellville">
+    <option value="Bonteheuwel">
+    <option value="Chris Hani">
+    <option value="Cape Town">
+    <option value="Century City">
+    <option value="Crawford">
+    <option value="Claremont">
+    <option value="Chavonnes">
+    <option value="Du Toit">
+    <option value="Dal Josafat">
+    <option value="Dieprivier">
+    <option value="Eerste River">
+    <option value="Eikenfontein">
+    <option value="Elsies River">
+    <option value="Esplanade">
+    <option value="False Bay">
+    <option value="Faure">
+    <option value="Fisantkraal">
+    <option value="Fish Hoek">
+    <option value="Firgrove">
+    <option value="Goodwood">
+    <option value="Glencairn">
+    <option value="Gouda">
+    <option value="Goudini Rd">
+    <option value="Harfield Rd"> 
+    <option value="Hazendal">
+    <option value="Heathfield">
+    <option value="Hermon">
+    <option value="Huguenot">
+    <option value="Heideveld">
+    <option value="Kalk Bay">
+    <option value="Klapmuts">
+    <option value="Kalbaskraal">
+    <option value="Kipheuwel">
+    <option value="Kuyasa">
+    <option value="Kenilworth">
+    <option value="Kapteinsklip">
+    <option value="Khayelitsha">
+    <option value="Kentemade">
+    <option value="Koeberg Rd">
+    <option value="Koelenhof">
+    <option value="Kraaifontein">
+    <option value="Kuilsrivier">
+    <option value="Lakeside">
+    <option value="Landsdowne">
+    <option value="Lenteguer">
+    <option value="Langa">
+    <option value="Lavistown">
+    <option value="Lynedoch">
+    <option value="Maitland">
+    <option value="Mandalay">
+    <option value="Malmesbury">
+    <option value="M'bekweni">
+    <option value="Mikpunt">
+    <option value="Mellish">
+    <option value="Melton Rose">
+    <option value="Monte Vista">
+    <option value="Mitchell's Plain">
+    <option value="Malan">
+    <option value="Mowbray">
+    <option value="Muizenberg">
+    <option value="Muldersvlei">
+    <option value="Mutual">
+    <option value="Newlands">
+    <option value="Ndabeni">
+    <option value="Netreg">
+    <option value="Nolungile">
+    <option value="Nyanga">
+    <option value="Nonqubela">
+    <option value="Observatory">
+    <option value="Oosterzee">
+    <option value="Ottery">
+    <option value="Paarl">
+    <option value="Parow">
+    <option value="Pentech">
+    <option value="Philippi">
+    <option value="Pinelands">
+    <option value="Plumstead">
+    <option value="Romans River">
+    <option value="Retreat">
+    <option value="Rosebank">
+    <option value="Rondebosch">
+    <option value="Strand">
+    <option value="Sarepta">
+    <option value="Somerset West">
+    <option value="Stellenbosch">
+    <option value="Soetendal">
+    <option value="Salt River">
+    <option value="Simon's Town">
+    <option value="Southfield">
+    <option value="Steenberg">
+    <option value="Steurhof">
+    <option value="Stikland">
+    <option value="St James">
+    <option value="Stock Road">
+    <option value="Sunny Cove">
+    <option value="Tygerberg">
+    <option value="Tulbaghweg">
+    <option value="Thornton">
+    <option value="Unibell">
+    <option value="Vlottenberg">
+    <option value="Van Der Stel">
+    <option value="Vasco">
+    <option value="Voelvlei">
+    <option value="Wetton">
+    <option value="Wolseley">
+    <option value="Worcester">
+    <option value="Wintervogel">
+    <option value="Wellington">
+    <option value="Woodstock">
+    <option value="Woltemade">
+    <option value="Wittebome">
+    <option value="Wynberg">
+    <option value="Ysterplaat">
+</datalist>
+
+<!-- Data list of all lines that can be blocked -->
+<datalist id="lines">
+    <option value="CAPE TOWN - WYNBERG - SIMON`S TOWN">
+    <option value="CAPE TOWN - RETREAT - VIA CAPE FLATS">
+    <option value="CAPE TOWN - BELLVILLE - VIA MONTE VISTA">
+    <option value="CAPE TOWN - BELLVILLE - WELLINGTON - STELLENBOSCH - STRAND">
+    <option value="CAPE TOWN - LANGA - LAVISTOWN - KAPTEINSKLIP - KHAYELITSHA - CHRIS HANI">
+</datalist>
+
+<!--Check if admin by verifying admin code-->
+<div class="admin_verification" id="admin_verification">
+    <div class="admin_verification_container">
+        <label for="enter_verification_code"><b>Enter Admin Verification Code:</b></label><br><br>
+        <input type="enter_verification_code" placeholder="Enter Code" id="enter_verification_code" required>
+        
+        <h5 id="invalid_code"></h5>
+
+        <button type="button" class="largeButton" id="admin_verification_button" style="width:100%">Submit</button><br>
+    </div>
+</div>
+
+<div class="admin_view" id="admin_view">
+    <!-- Buttons linking to the different admin control options -->
+    <div id="admin_buttons">
+        <button type="button" class="largeButton" style="width:45%; float: left" id="to_close_station">Close Station</button>
+        <button type="button" class="largeButton" style="width:45%; float: right" id="to_close_line">Close Train Line</button><br><br>
+    </div>
+</div><br><br>
+
+    <!-- Div for the areas to input train lines/stations to close -->
+<div class="admin_control_screen" id="admin_control_screen" style="display:none">
+    <!-- Div to allow admin to enter station to close -->
+    <div class="admin_container" id="close_station" style="display:none">
+        <label for="close_station_text">Enter the Station you would like to close:</label>
+        <!-- Autocompletes from 'stations' datalist -->
+        <input type="close_station_text" list="stations" placeholder="Enter Station" id="close_station_text" required>
+
+        <!-- If there is an issue with the input, it is shown here -->
+        <h5 id="invalid_station"></h5><br>
+
+        <button type="button" class="largeButton" style="width:45%; float: left" id="close_station_button">Enter</button>
+        <button type="button" class="largeButton" style="width:45%; float: right" id="back_close_station">Back</button><br><br><br>
+    </div>
+
+    <!-- Div to allow admin to enter line to close -->
+    <div class="admin_container" id="close_line" style="display:none">
+        <label for="close_line_text">Enter the Train Line you would like to close:</label>
+        <!-- Autocompletes from 'lines' datalist -->
+        <input type="close_line_text" list="lines" placeholder="Enter Train Line" id="close_line_text" required>
+
+        <!-- If there is an issue with the input, it is shown here -->
+        <h5 id="invalid_line"></h5><br>
+
+        <button type="button" class="largeButton" style="width:45%; float: left" id="close_line_button">Enter</button>
+        <button type="button" class="largeButton" style="width:45%; float: right" id="back_close_line">Back</button><br><br><br>
+    </div>
+</div>
+
+<!-- Container holding both closed lists (stations and lines) -->
+<div class="admin_list_container" id="admin_list_container">
+    <!-- List of closed stations. Stations can be added to and removed from the list -->
+    <div class="closed_stations_view" id="closed_stations_view" style="display:none">
+        <h2 style="text-align: center">Closed Stations:</h2>
+        <h5 style="text-align: center" id="no_stations_closed"></h5>
+        <h5 style="text-align: center" id="stations_closed_notification"></h5>
+        <!-- Table populated once admin logs in or new station blocked -->
+        <table id="closed_stations_table" style="display:none">
+            <thead>
+                <tr>
+                    <th width="300px">Station:</th>
+                    <th width="300px"></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- List of closed train lines. Lines can be added to and removed from the list -->
+    <div class="closed_lines_view" id="closed_lines_view" style="display:none">
+        <h2 style="text-align: center">Closed Lines:</h2>
+        <h5 style="text-align: center" id="no_lines_closed"></h5>
+        <h5 style="text-align: center" id="lines_closed_notification"></h5>
+        <!-- Table populated once admin logs in or line is blocked -->
+        <table id="closed_lines_table" style="display:none">
+            <thead>
+                <tr>
+                    <th width="300px">Line:</th>
+                    <th width="300px"></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+<!--JAVASCRIPT-->
+<script>
+    /*
+        socketOpen is used to send the name of a station/line that is to be reopened. On receiving confirmation from
+        the server that the station/line has been opened, it removes the station'line from its respective table.
+    */
+    const socketOpen = new WebSocket('ws://' + location.host + '/open')
+    socketOpen.addEventListener('message', ev => {
+        data = ev.data.split('/');
+
+        // Remove the station/line from the tables
+        document.getElementById(data[1]).remove();
+        // Check if stations table is now empty, if it is, reset it
+        if (data[0] == 'Opened Station') {
+            if (document.querySelectorAll('#closed_stations_table tr').length == 1) {
+                document.getElementById('closed_stations_table').style.display = 'none';
+                document.getElementById('no_stations_closed').innerHTML        = 'Currently no stations are closed.';
+            }      
+        }
+        // Check if lines table is now empty, if it is, reset it
+        else if (data[0] == 'Opened Line') {
+            if (document.querySelectorAll('#closed_lines_table tr').length == 1) {
+                document.getElementById('closed_lines_table').style.display = 'none';
+                document.getElementById('no_lines_closed').innerHTML        = 'Currently no stations are closed.';
+            }      
+        }
+    })
+
+    /*
+        addStation is a function used to add a station to the table of blocked stations. It also creates an 'Open'
+        button next to the station name which is used to re-open the station.
+    */
+    function addStation(station) {
+        // Ensure 'no stations' text is not present
+        document.getElementById('no_stations_closed').innerHTML = '';
+
+        // Get the table
+        var table = document.getElementById("closed_stations_table");
+
+        // Create a new row
+        var row  = table.insertRow();
+        row.id    = station;
+
+        // Add the station to the row
+        row.insertCell(0).innerHTML = station;
+
+        // Create the open button
+        var open_button = document.createElement('button');
+        open_button.type = 'button';
+        open_button.classList.add('tableButtonAdmin');
+        open_button.textContent = 'Open';
+        //Add event listener to the open button
+        open_button.addEventListener('click', ev => {
+            socketOpen.send('Station/' + station);
+        })
+
+        // Add button to the row
+        row.insertCell(1).appendChild(open_button);
+    }
+
+    /*
+        addLine is a function used to add a line to the table of blocked lines. It also creates an 'Open' button next 
+        to the line name which is used to re-open the line.
+    */
+    function addLine(line) {
+        // Ensure 'no lines' text is not present
+        document.getElementById('no_lines_closed').innerHTML = '';
+
+        // Get the table
+        var table = document.getElementById("closed_lines_table");
+
+        // Create a new row
+        var row  = table.insertRow();
+        row.id    = line;
+
+        // Add line to the row
+        row.insertCell(0).innerHTML = line;
+
+        // Create the 'Open' button
+        var open_button = document.createElement('button');
+        open_button.type = 'button';
+        open_button.classList.add('tableButtonAdmin');
+        open_button.textContent = 'Open';
+
+        // Add an event listener to the 'Open' button
+        open_button.addEventListener('click', ev => {
+            socketOpen.send('Line/' + line);
+        })
+
+        // Add 'Open' button to the row
+        row.insertCell(1).appendChild(open_button);
+    }
+
+    document.getElementById('admin_view').style.display = 'none';
+
+    /*
+        socketVerify is used to send a code to the server to be compared with the admin code and allow
+        admin access if codes match. The socket is also used to fill the two tables once the code is 
+        validated.
+    */
+    const socketVerify = new WebSocket('ws://' + location.host + '/verifyAdmin');
+    socketVerify.addEventListener('message', ev => {
+        // If the code is incorrect, notify user
+        if (ev.data == 'Wrong Code') {
+            document.getElementById('invalid_code').innerHTML = 'The code you entered was incorrect. Try again.';
+        }
+        // If code is correct, make the admin control visible
+        else if (ev.data == "Correct Code") {
+            document.getElementById('invalid_code').innerHTML           = '';
+            document.getElementById('admin_verification').style.display = 'none';
+            document.getElementById('admin_view').style.display         = 'block';
+            document.getElementById('closed_stations_view').style.display = 'block';
+            document.getElementById('closed_lines_view').style.display  = 'block';
+        }
+        // Server says no stations are currently closed
+        else if (ev.data == "No Stations Closed") {
+            document.getElementById('no_stations_closed').innerHTML = 'Currently no stations are closed.';
+        }
+        // Server says no lines are currently closed
+        else if (ev.data == "No Lines Closed") {
+            document.getElementById('no_lines_closed').innerHTML    = 'Currently no lines are closed';
+        }
+        // Else, populate the tables
+        else {
+            var temp = ev.data.split('/');
+            if (temp[0] == "Station") {
+                addStation(temp[1]);
+                // Make table visible
+                document.getElementById('closed_stations_table').style.display = 'block';
+            }
+            else {
+                addLine(temp[1]);
+                // Make table visible
+                document.getElementById('closed_lines_table').style.display    = 'block';
+            }
+        }
+    })
+
+    // Send code through to server for verification
+    document.getElementById('admin_verification_button').onclick = ev => {
+        code = document.getElementById('enter_verification_code').value;
+        // Check if anything was entered before sending
+        if (code == '') {
+            document.getElementById('invalid_code').innerHTML = 'Please enter a code before submitting.';
+        }
+        // Else, send to server and empty the input and messages
+        else {
+            socketVerify.send(code);
+            document.getElementById('enter_verification_code').value = '';
+            document.getElementById('invalid_code').innerHTML        = '';
+        }
+    }
+
+    /*
+        Add listeners to the 'Close Station', 'Close Line', 'Back' (station) and 'Back' (line) buttons.
+        These simply hide or reveal certain document elements.
+    */
+    document.getElementById('to_close_station').onclick = ev => {
+        document.getElementById('admin_view').style.display           = 'none';
+        document.getElementById('admin_control_screen').style.display = 'block';
+        document.getElementById('close_station').style.display        = 'block';
+    }
+
+    document.getElementById('to_close_line').onclick = ev => {
+        document.getElementById('admin_view').style.display = 'none';
+        document.getElementById('admin_control_screen').style.display = 'block';
+        document.getElementById('close_line').style.display = 'block';
+    }
+
+    document.getElementById('back_close_station').onclick = ev => {
+        document.getElementById('admin_view').style.display   = 'block';
+        document.getElementById('admin_control_screen').style.display = 'none';
+        document.getElementById('close_station').style.display   = 'none';
+        document.getElementById('invalid_station').innerHTML = '';
+    }
+
+    document.getElementById('back_close_line').onclick = ev => {
+        document.getElementById('admin_view').style.display   = 'block';
+        document.getElementById('admin_control_screen').style.display = 'none';
+        document.getElementById('close_line').style.display      = 'none';
+        document.getElementById('invalid_line').innerHTML = '';
+    }
+
+    /*
+        socketBlock is used to send the server a station/line to be blocked. Upon receiving confirmation
+        of the block from the server, the station/line is added to its respective table.
+    */
+    socketBlock = new WebSocket('ws://' + location.host + '/adminControl')
+    socketBlock.addEventListener('message', ev => {
+        data = ev.data;
+        // If the station/line is already blocked, inform user
+        if (data == "Station is already blocked.") {
+            document.getElementById('invalid_station').innerHTML = data;
+        }
+        else if (data == "Train Line is already blocked") {
+            document.getElementById('invalid_line').innerHTML    = data;
+        }
+        // Else, split the search to get the header
+        else {
+            temp = data.split('/');
+            response = temp[0];
+            input    = temp[1];
+
+            // If station is blocked, append to stations table
+            if (response == "Station blocked") {
+                addStation(input);
+                document.getElementById('closed_stations_table').style.display = 'block';
+            }
+            // If line is blocked, append to lines table
+            else if (response == "Train Line blocked")  {
+                addLine(input);
+                document.getElementById('closed_lines_table').style.display = 'block';
+            }
+        }
+    })
+
+    // Add listeners to the button to add blocks on train stations
+    document.getElementById('close_station_button').onclick = ev => {
+        station = document.getElementById('close_station_text').value;
+        document.getElementById('close_station_text').value = '';
+        if (station == '') {
+            document.getElementById('invalid_station').innerHTML = 'Please enter a station before submitting.';
+        }
+        else {
+            socketBlock.send("block_station/" + station);
+        }
+    }
+
+    // Add listener to the button to add blocks on train lines
+    document.getElementById('close_line_button').onclick = ev => {
+        line = document.getElementById('close_line_text').value;
+        document.getElementById('close_line_text').value = '';
+        if (line == '') {
+            document.getElementById('invalid_line').innerHTML = 'Please enter a train line before submitting.';
+        }
+        else {
+            socketBlock.send("block_line/" + line);
+        }
+    }
+
+</script>
+{% endblock %}
